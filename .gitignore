@@ -8,6 +8,8 @@
 *.so
 *.dylib
 
+/storage
+
 # Test binary, coverage and profiling outputs
 *.test
 *.out
