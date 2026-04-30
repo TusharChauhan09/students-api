@@ -9,6 +9,7 @@
 *.dylib
 
 /storage
+/config
 
 # Test binary, coverage and profiling outputs
 *.test
