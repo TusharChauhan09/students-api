@@ -1,0 +1,66 @@
+
+# Go: Ignore build outputs, binaries, and common artifacts
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, coverage and profiling outputs
+*.test
+*.out
+coverage.out
+*.coverprofile
+
+# Build output folders
+/bin/
+/build/
+/dist/
+_build/
+
+# Package objects (optional, created by some build setups)
+/pkg/
+
+# Vendor directory (uncomment if you DO NOT commit vendor/ to VCS)
+/vendor/
+
+# Go workspace file
+go.work
+
+# Generated files
+*.generated
+*.gen.go
+
+# cgo debug files
+*.dSYM
+
+# Dependency directories created by package managers (not typical for Go but safe)
+node_modules/
+
+# Environment and secrets
+.env
+.env.*
+secrets.yaml
+
+# Logs and temporary files
+*.log
+/tmp/
+/temp/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Misc
+*.swp
+*.swo
+
