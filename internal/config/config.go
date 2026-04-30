@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"flag"
@@ -10,14 +10,13 @@ import (
 
 type Config struct {
 	Env         string           `yaml:"env" env:"ENV" env-required:"true"`
-	StoragePath string           `yaml:"storage_path" env:"STORAGE_PATH" env-required:"true"`
-	HTTPServer  HTTPServerConfig `yaml:"http_server" env:"HTTP_SERVER"`
+	StoragePath string           `yaml:"storage_path" env-required:"true"`
+	HTTPServer  HTTPServerConfig `yaml:"http_server"`
 }
 
 type HTTPServerConfig struct {
-	Address string `yaml:"address" env:"HTTP_SERVER_ADDRESS" env-required:"true"`
+	Address string `yaml:"address" env-required:"true"`
 }
-
 
 func MustLoad() *Config {
 	var configPath string
