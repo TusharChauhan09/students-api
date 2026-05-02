@@ -7,6 +7,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/TusharChauhan09/students-api/internal/storage"
 	"github.com/TusharChauhan09/students-api/internal/types"
@@ -14,6 +15,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// storage storage.Storage : for the interface working
 func New(storage storage.Storage) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		var student types.Student
@@ -52,5 +54,40 @@ func New(storage storage.Storage) http.HandlerFunc {
 
 		response.WriteJson(res,http.StatusCreated, map[string]int64{"id" : lastId})
 
+	}
+}
+
+
+func GetById(storage storage.Storage) http.HandlerFunc {
+	return func(res http.ResponseWriter, req *http.Request) {
+		id := req.PathValue("id")
+		slog.Info("getting student", slog.String("id",id))
+
+		intId,err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			response.WriteJson(res,http.StatusBadRequest,response.GeneralError(err))
+			return
+		}
+
+		student , err := storage.GetStudentById(intId)
+		if err != nil {
+			response.WriteJson(res, http.StatusInternalServerError, response.GeneralError(err))
+			return 
+		}
+		
+		response.WriteJson(res, http.StatusOK, student) 
+	}
+}
+
+
+func GetList(storage storage.Storage) http.HandlerFunc {
+	return func (res http.ResponseWriter, req *http.Request) {
+		students , err := storage.GetStudents()
+		if err != nil {
+			response.WriteJson(res, http.StatusInternalServerError, response.GeneralError(err))
+			return 
+		}
+
+		response.WriteJson(res, http.StatusOK, students) 
 	}
 }

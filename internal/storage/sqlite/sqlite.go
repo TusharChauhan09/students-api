@@ -2,8 +2,10 @@ package sqlite
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/TusharChauhan09/students-api/internal/config"
+	"github.com/TusharChauhan09/students-api/internal/types"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -51,4 +53,68 @@ func (s *Sqlite) CreateStudent(name string, email string, age int) (int64, error
 	}
 
 	return lastID, nil
+}
+
+func (s *Sqlite) GetStudentByID(id int64) (types.Student, error) {
+	stmt, err := s.Db.Prepare(
+		"SELECT id, name, email, age FROM students WHERE id = ?",
+	)
+	if err != nil {
+		return types.Student{}, err
+	}
+	defer stmt.Close()
+
+	var student types.Student
+
+	err = stmt.QueryRow(id).Scan(
+		&student.Id,
+		&student.Name,
+		&student.Email,
+		&student.Age,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows{
+			return types.Student{}, fmt.Errorf("no student found with id %d", id)
+		}
+		return types.Student{}, fmt.Errorf("query error: %w",err)
+	}
+
+	return student, nil
+}
+
+func (s *Sqlite) GetStudents() ([]types.Student, error) {
+	stmt, err := s.Db.Prepare(
+		`SELECT id, name, email, age FROM students`,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("prepare error: %w", err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, fmt.Errorf("query error: %w", err)
+	}
+	defer rows.Close()
+
+	var students []types.Student
+
+	for rows.Next() {
+		var student types.Student
+
+		err := rows.Scan(
+			&student.Id,
+			&student.Name,
+			&student.Email,
+			&student.Age,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("scan error: %w", err)
+		}
+
+		students = append(students, student)
+	}
+	
+	return students, nil
 }
