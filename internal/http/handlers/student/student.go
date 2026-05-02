@@ -25,7 +25,8 @@ func New(storage storage.Storage) http.HandlerFunc {
 		}
 
 		if err != nil {
-			response.WriteJson(res,http.StatusBadRequest, response.GenralError(err))
+			response.WriteJson(res,http.StatusBadRequest, response.GeneralError(err))
+			return
 		}
 
 		// ! request validation  // go-playground
@@ -36,9 +37,20 @@ func New(storage storage.Storage) http.HandlerFunc {
 		}
 
 
-		slog.Info("student created")
+		lastId, err := storage.CreateStudent(
+			student.Name,
+			student.Email,
+			student.Age,
+		)
 
-		response.WriteJson(res,http.StatusCreated, map[string]string{"success" : "ok"})
+		if err != nil {
+			response.WriteJson(res, http.StatusInternalServerError,err)
+			return
+		}
+
+		slog.Info("student created", slog.String("userId",fmt.Sprint(lastId)))
+
+		response.WriteJson(res,http.StatusCreated, map[string]int64{"id" : lastId})
 
 	}
 }

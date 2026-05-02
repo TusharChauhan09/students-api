@@ -28,7 +28,7 @@ type Response struct {
 	Error string `json:"error"` 
 }
 
-func GenralError (err error) Response {
+func GeneralError (err error) Response {
 	return Response {
 		Status: StatusError,
 		Error: err.Error(),
